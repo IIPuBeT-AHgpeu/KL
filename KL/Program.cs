@@ -11,9 +11,20 @@ using(FileStream fs = new FileStream(@"C:\Users\Kirpa\source\repos\KL\KL\7.txt",
 
 string[] links = textFromFile.Split('\n');
 
-KL.Parser parser = new KL.Parser(links[0]);
-parser.GetHtmlBody();
+KL.Parser parser;
+string write;
 
-Console.WriteLine(parser.HtmlBody);
+for (int i = 0; i < links.Length; i++)
+{
+    parser = new KL.Parser(links[i]);
+    parser.GetHtmlBody();
+    parser.ParseHtmlBody();
 
-Console.ReadLine();
+    using (FileStream fs = new FileStream(@$"C:\Users\Kirpa\source\repos\result\{i+1}.txt", FileMode.Create))
+    {
+        write = "Abstract:\n" + parser.Patent.Abstract + "\nDescription:\n" + parser.Patent.Description + "\nClaims:\n" + parser.Patent.Claims;
+
+        byte[] bytes = System.Text.Encoding.Default.GetBytes(write);
+        fs.Write(bytes, 0, bytes.Length);
+    }
+}
